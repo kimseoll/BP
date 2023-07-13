@@ -1,0 +1,99 @@
+<!--
+  @description       : 
+  @author            : seol.kim@dkbmc.com
+  @group             : 
+  @last modified on  : 06-20-2023
+  @last modified by  : seol.kim@dkbmc.com
+-->
+<template>
+    <!-- Modal/Popup Box LWC starts here -->
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+      aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+        onclick={closeModal}>
+        <lightning-icon icon-name="utility:close" alternative-text="Close this window" variant="inverse"
+          size="small"></lightning-icon>
+      </button>
+        <!-- Modal/Popup Box LWC header here -->
+        <div class="slds-scrollable_y">
+          <lightning-record-edit-form object-api-name="aContact__c" onsuccess={ContactSave}>
+            <header class="slds-modal__header">
+              <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">New Contact</h2>
+            </header>
+            <!-- Modal/Popup Box LWC body starts here -->
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <div class="slds-m-around--xx-large container-fluid">
+                    <div class="slds-float_right slds-p-bottom_small">
+                        <h1 class="slds-page-header__title">Add Row
+                            <lightning-button-icon icon-name="utility:add"  size="large" variant="bare" alternative-text="Add" onclick={addRow}> </lightning-button-icon>
+                        </h1>
+                    </div>
+                    <div class="container-fluid">        
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer"> 
+                            <thead>
+                                <tr class="slds-text-title_caps">
+                                    <th scope="col">
+                                        <div class="slds-truncate">#</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Last Name">Last Name</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="First Name">First Name</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Title">Title</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Phone">Phone</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Action">Action</div>
+                                    </th>
+                                </tr>
+                            </thead>   
+                            <tbody>      
+                                
+                                <template for:each={contactList} for:item="ac" for:index="indx">
+                                    <tr key={ac.key} id={ac.key}> 
+                                        <td>{indx}</td>                                                  
+                                        <td>
+                                            <lightning-input data-id={indx} label="LastName" value={ac.Last_Name__c} onchange={handleLastNameChange}></lightning-input>                               
+                                        </td>
+                                        <td>
+                                            <lightning-input data-id={indx} label="FirstName" value={ac.First_Name__c} onchange={handleFirstNameChange}></lightning-input>                               
+                                        </td>
+                                        <td>
+                                            <lightning-input data-id={indx} label="Title" value={ac.Title__c} onchange={handleTitleChange}></lightning-input>                        
+                                        </td>
+                                        <td>
+                                            <lightning-input data-id={indx} label="Phone" value={ac.Phone__c} onchange={handlePhoneChange}></lightning-input>
+                                        </td>
+        
+                                        <td>
+                                            <lightning-button-icon icon-name="utility:delete"
+                                                  data-id={indx}       
+                                                  alternative-text="Delete"     
+                                                  class="slds-m-left_xx-small"
+                                                  onclick={removeRow} 
+                                                  title="Delete"></lightning-button-icon>
+                                        </td>
+                                    </tr>
+                                </template>
+                                 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>            
+             </div>   
+                <!-- Modal/Popup Box LWC footer starts here -->
+            <footer class="slds-modal__footer" style="text-align: center">
+                <lightning-button name="Save" label="Save" onclick={saveRecord} ></lightning-button>
+            </footer>
+          </lightning-record-edit-form>
+        </div>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+  </template>

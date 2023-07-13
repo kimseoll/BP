@@ -1,0 +1,123 @@
+<!--
+  @description       : 
+  @author            : seol.kim@dkbmc.com
+  @group             : 
+  @last modified on  : 06-15-2023
+  @last modified by  : seol.kim@dkbmc.com
+-->
+<template>
+  <!-- Modal/Popup Box LWC starts here -->
+  <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+    aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+      <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+        onclick={closeModal}>
+        <lightning-icon icon-name="utility:close" alternative-text="Close this window" variant="inverse"
+          size="small"></lightning-icon>
+      </button>
+      <!-- Modal/Popup Box LWC header here -->
+      <div class="slds-scrollable_y">
+        <lightning-record-edit-form record-id={recordId} object-api-name="aAccount__c" onsuccess={handleSuccess} onload={test}>
+          <template if:true={loadMore}> 
+            <!-- <template lwc:if={aAccount__c.data}> -->
+          <header class="slds-modal__header">
+            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate" >Edit </h2>
+          </header>
+          </template>
+          <!-- Modal/Popup Box LWC body starts here -->
+          <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+            <h3 flexipage-fieldsection2_fieldsection2=""
+              class="label slds-truncate slds-p-around_x-small slds-theme_shade" data-target-reveals=""><span
+                flexipage-fieldsection2_fieldsection2="" class="slds-truncate" title="Account Information">Account
+                Information</span></h3>
+            <br>
+            <div class="slds-grid">
+              <div class="slds-col slds-size_1-of-2">
+                <lightning-output-field field-name="OwnerId" value=""></lightning-output-field>
+                <lightning-input-field field-name="Name"> </lightning-input-field>
+                <lightning-input-field field-name="Parent_Account__c"></lightning-input-field>
+                <lightning-input-field field-name="Account_Number__c"> </lightning-input-field>
+                <lightning-input-field field-name="Account_Site__c"> </lightning-input-field>
+                <lightning-input-field field-name="Type__c"> </lightning-input-field>
+                <lightning-input-field field-name="Industry__c"> </lightning-input-field>
+                <lightning-input-field field-name="Annual_Revenue__c"> </lightning-input-field>
+              </div>
+              <div class="slds-col slds-size_1-of-2">
+                <lightning-input-field field-name="Rating__c"> </lightning-input-field>
+                <lightning-input-field field-name="Phone__c"> </lightning-input-field>
+                <lightning-input-field field-name="Fax__c"> </lightning-input-field>
+                <lightning-input-field field-name="Website__c"> </lightning-input-field>
+                <lightning-input-field field-name="Ticker_Symbol__c"> </lightning-input-field>
+                <lightning-input-field field-name="Ownership__c"> </lightning-input-field>
+                <lightning-input-field field-name="NumberOfEmployees__c"> </lightning-input-field>
+                <lightning-input-field field-name="SIC__c"> </lightning-input-field>
+              </div>
+            </div>
+            <br>
+            <h3 flexipage-fieldsection2_fieldsection2=""
+              class="label slds-truncate slds-p-around_x-small slds-theme_shade" data-target-reveals=""><span
+                flexipage-fieldsection2_fieldsection2="" class="slds-truncate" title="Address Information">Address
+                Information</span></h3>
+            <br>
+            <div class="slds-grid">
+              <div class="slds-col slds-size_1-of-2">
+                <lightning-input-field field-name="Billing_State__c"></lightning-input-field>
+                <lightning-input-field field-name="Billing_City__c"> </lightning-input-field>
+                <lightning-input-field field-name="Billing_Street__c"> </lightning-input-field>
+                <lightning-input-field field-name="Billing_Zip_Postal_Code__c"> </lightning-input-field>
+                <lightning-input-field field-name="Billing_Country__c"> </lightning-input-field>
+              </div>
+              <div class="slds-col slds-size_1-of-2">
+                <lightning-input-field field-name="Shipping_State_Province__c"> </lightning-input-field>
+                <lightning-input-field field-name="Shipping_City__c"> </lightning-input-field>
+                <lightning-input-field field-name="Shipping_Street__c"> </lightning-input-field>
+                <lightning-input-field field-name="Shipping_Zip_Postal_Code__c"> </lightning-input-field>
+                <lightning-input-field field-name="Shipping_Country__c"> </lightning-input-field>
+              </div>
+            </div>
+            <br>
+            <h3 flexipage-fieldsection2_fieldsection2=""
+              class="label slds-truncate slds-p-around_x-small slds-theme_shade" data-target-reveals=""><span
+                flexipage-fieldsection2_fieldsection2="" class="slds-truncate" title="Additional Information
+                ">Additional Information
+              </span></h3>
+            <br>
+            <div class="slds-grid">
+              <div class="slds-col slds-size_1-of-2">
+                <lightning-input-field field-name="Customer_Priority__c"></lightning-input-field>
+                <lightning-input-field field-name="SLA_Expiration_Date__c"> </lightning-input-field>
+                <lightning-input-field field-name="Number_of_Locations__c"> </lightning-input-field>
+                <lightning-input-field field-name="Active__c"> </lightning-input-field>
+              </div>
+              <div class="slds-col slds-size_1-of-2">
+                <lightning-input-field field-name="SLA__c"> </lightning-input-field>
+                <lightning-input-field field-name="SLA_Serial_Number__c"> </lightning-input-field>
+                <lightning-input-field field-name="Upsell_Opportunity__c"> </lightning-input-field>
+              </div>
+            </div>
+            <br>
+            <h3 flexipage-fieldsection2_fieldsection2=""
+              class="label slds-truncate slds-p-around_x-small slds-theme_shade" data-target-reveals=""><span
+                flexipage-fieldsection2_fieldsection2="" class="slds-truncate" title="Description Information
+                ">Description Information
+              </span></h3>
+            <br>
+            <div class="slds-grid">
+              <lightning-input-field field-name="Description__c"> </lightning-input-field>
+            </div>
+          </div>
+          <!-- Modal/Popup Box LWC footer starts here -->
+          <footer class="slds-modal__footer" style="text-align: center">
+            <lightning-button variant="neutral" onclick={closeModal} label="Cancel"></lightning-button>
+            &nbsp;&nbsp;
+            <lightning-button variant="neutral" type="submit" onclick={handleSaveAndNew} label="Save&amp;New"></lightning-button>
+            &nbsp;&nbsp;
+            <lightning-button variant="brand" type="submit" onclick={handleSave} label="Save" ></lightning-button>
+          </footer> 
+        <!-- </template> -->
+        </lightning-record-edit-form>
+      </div>
+    </div>
+  </section>
+  <div class="slds-backdrop slds-backdrop_open"></div>
+</template>

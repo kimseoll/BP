@@ -1,0 +1,63 @@
+<!--
+  @description       : 
+  @author            : seol.kim@dkbmc.com
+  @group             : 
+  @last modified on  : 06-23-2023
+  @last modified by  : seol.kim@dkbmc.com
+-->
+<template>
+    <article class="slds-card">
+        <div
+            class="slds-page-header slds-page-header_joined slds-page-header_bleed slds-shrink-none test-headerRegion slds-is-relative">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="standard:contact" alternative-text="contact" size="small"
+                        title="contact"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a href="#" class="slds-card__header-link slds-truncate" title="Contacts">
+                            <span>Contacts</span>
+                        </a>
+                    </h2>
+                </div>
+                <div class="slds-no-flex">
+                    <lightning-button label="New" onclick={showPopup}></lightning-button>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <template if:true={records}>
+                <lightning-layout multiple-rows="true">
+                    <template for:each={records} for:item="con">
+                        <lightning-layout-item key={con.Id} size="4">
+                            <article class="slds-tile slds-media slds-card__tile slds-hint-parent">
+                                <lightning-card title={con.Name} variant="Narrow" icon-name="standard:contact"
+                                    size="large">
+                                    <lightning-button-icon icon-name="utility:down" size="x-small"
+                                        variant="border-filled" alternative-text="Show More"
+                                        slot="actions"></lightning-button-icon>
+                                    <div class="slds-var-p-horizontal_small bear-tile-body">
+                                        <p class="slds-var-m-bottom_xx-small">Title : {con.Title__c}</p>
+                                        <p class="slds-var-m-bottom_xx-small">Phone : {con.Phone__c}</p>
+                                    </div>
+                                </lightning-card>
+                            </article>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+            </template>
+            <template if:true={error}>
+                <div class="slds-text-color_error">
+                    An error occurred while loading the bear list
+                </div>
+            </template>
+        </div>
+        <footer class="slds-card__footer">
+            <lightning-button class="slds-card__footer-action" label="View All" onclick={showPage}></lightning-button>
+        </footer>
+        <template if:true={modal}>
+            <c-test-new oncloseevent={closeModal} record-id={recordId}></c-test-new>
+        </template>
+    </article>
+</template>
