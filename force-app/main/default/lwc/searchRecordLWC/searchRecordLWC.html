@@ -1,0 +1,205 @@
+<!--
+  @description       : 
+  @author            : seol.kim@dkbmc.com
+  @group             : 
+  @last modified on  : 07-13-2023
+  @last modified by  : seol.kim@dkbmc.com
+-->
+<template>
+    <div class="slds-page-header">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name="standard:case" alternative-text="case" title="case"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span>Case</span>
+                                    <span class="slds-page-header__title slds-truncate"
+                                        title="Recently Viewed">Recently Viewed</span>
+                                </h1>
+                            </div>
+                            <div class="slds-page-header__name-switcher">
+                                <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                    <lightning-button-icon icon-name="utility:down" alternative-text="down" title="down" variant="bare"></lightning-button-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-page-header__col-actions">
+                <div class="slds-page-header__controls">
+                    <div class="slds-page-header__control">
+                        <ul class="slds-button-group-list">
+                            <li>
+                                <lightning-button label="New" onclick={openModal}></lightning-button>
+                            </li>
+                            <li>
+                                <button class="slds-button slds-button_neutral">Change Owner</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-meta">
+                <p class="slds-page-header__meta-text"> items • Updated  minutes ago</p>
+            </div>
+            <div class="slds-page-header__col-controls">
+                <div class="slds-page-header__controls">
+                    <div class="slds-page-header__control">
+                        <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                            <lightning-button-icon icon-name="utility:settings" alternative-text="settings" title="settings" variant="border-filled"></lightning-button-icon>
+                        </div>
+                    </div>
+                    <div class="slds-page-header__control">
+                        <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                            <lightning-button-icon icon-name="utility:table" alternative-text="table" title="table" variant="border-filled"></lightning-button-icon>
+                        </div>
+                    </div>
+                    <div class="slds-page-header__control">
+                        <lightning-button-icon icon-name="utility:refresh" alternative-text="refresh" title="refresh" variant="border-filled"></lightning-button-icon>
+                    </div>
+                    <div class="slds-page-header__control">
+                        <lightning-button-icon icon-name="utility:edit" alternative-text="edit" title="edit" variant="border-filled" onclick={openEditModal}></lightning-button-icon>
+                    </div>
+                    <div class="slds-page-header__control">
+                        <ul class="slds-button-group-list">
+                            <li>
+                                <lightning-button-icon icon-name="utility:chart" alternative-text="chart" title="chart" variant="border-filled"></lightning-button-icon>
+                            </li>
+                            <li>
+                                <lightning-button-icon icon-name="utility:filterList" alternative-text="filterList" title="filterList" variant="border-filled"></lightning-button-icon>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <lightning-card title="Search case component">  
+        <div class="slds-p-horizontal_small">
+            <lightning-layout multiple-rows> 
+                <lightning-layout-item size="3" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-input
+                        type="text"
+                        variant="standard"
+                        name="caseNumber"
+                        value={caseNumber}
+                        label="Search Case Number"
+                        onkeyup={handleKeyUp}
+                    ></lightning-input>
+              
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="3" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-input
+                            type="text"
+                            variant="standard"
+                            name="subject"
+                            value={subject}
+                            label="Search Subject"       
+                            onkeyup={handleKeyUp}
+                        ></lightning-input>
+                    </div>
+                </lightning-layout-item>
+                <!-- <lightning-layout-item size="2" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-input
+                        type="text"
+                        variant="standard"
+                        name="accountName"
+                        value={accountName}
+                        label="Search Account"                   
+                        onkeyup={handleKeyUp}
+                    ></lightning-input>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="2" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-input
+                            type="text"
+                            variant="standard"
+                            name="contactName"
+                            value={contactName}
+                            label="Search Contact"                      
+                            onkeyup={handleKeyUp}
+                        ></lightning-input>
+                    </div>
+                </lightning-layout-item> -->
+                <lightning-layout-item size="2" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-combobox
+                            name="status"
+                            label="Status"
+                            value={status}                          
+                            options={statusPickListValues}
+                            onchange={handleChange}
+                        ></lightning-combobox>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="2" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-combobox
+                            name="priority"
+                            label="Priority"
+                            value={priority} 
+                            options={priorityPickListValues}
+                            onchange={handleChange}
+                        ></lightning-combobox>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="2" padding="around-small" class="slds-m-top_large">
+                    <lightning-button-icon
+                    variant="base"
+                    size="small"
+                    icon-name="utility:clear"
+                    alternative-text="Clear Search"
+                    onclick={clearSearch}
+                ></lightning-button-icon>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+        <br><br>
+
+        <template if:true={caseList}>      
+            <lightning-datatable
+                key-field="Id"
+                data={caseList}
+                columns={columns}
+                show-row-number-column="true"
+                onrowaction={handleRowAction}
+                sorted-by={sortBy}
+                sorted-direction={sortDirection}
+                onsort={doSorting}>
+            </lightning-datatable>  
+        </template>      
+        <template if:true={error}>  
+            {error}>                  
+        </template>   
+
+
+
+    <!-- new 버튼 클릭 시-->
+    <template if:true={modal}>
+        <c-case-new  onclose={closeModal}></c-case-new>
+    </template>
+
+  <!-- Edit 버튼 클릭 시-->
+  <template if:true={editModal}>
+    <c-case-edit record-id={editId} onclose={closeEditModal}></c-case-edit>
+  </template>
+        
+    </lightning-card>
+
+
+
+
+</template>

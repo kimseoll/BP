@@ -1,0 +1,144 @@
+<!--
+  @description       : 
+  @author            : seol.kim@dkbmc.com
+  @group             : 
+  @last modified on  : 07-12-2023
+  @last modified by  : seol.kim@dkbmc.com
+-->
+<template>
+  <template lwc:if={aCase__c.data}>
+    <div class="slds-page-header slds-page-header_record-home">
+      <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+          <div class="slds-media">
+            <div class="slds-media__figure">
+              <lightning-icon icon-name="standard:case" alternative-text="case" title="case"></lightning-icon>
+            </div>
+            <div class="slds-media__body">
+              <div class="slds-page-header__name">
+                <div class="slds-page-header__name-title">
+                  <h1>
+                    <span>case</span>
+                    <span class="slds-page-header__title slds-truncate" title="Subject__c">{Subject__c}</span>
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slds-page-header__col-actions">
+          <div class="slds-page-header__controls">
+            <div class="slds-page-header__control">
+              <lightning-button-stateful selected={buttonStatefulState} label-when-off="Follow"
+                label-when-on="Following" label-when-hover="Unfollow" icon-name-when-off="utility:add"
+                icon-name-when-on="utility:check" icon-name-when-hover="utility:close"
+                onclick={handleButtonStatefulClick}></lightning-button-stateful>
+            </div>
+            <div class="slds-page-header__control">
+              <lightning-button label="Close Case" onclick={openModal}></lightning-button>
+            </div>
+            <div class="slds-page-header__control">
+              <ul class="slds-button-group-list">
+                <li>
+                  <lightning-button label="Edit" onclick={openEditModal}></lightning-button>
+                </li>
+                <li>
+                  <lightning-button label="Delete" onclick={openDeleteModal}></lightning-button>
+                </li>
+                <li>
+                  <lightning-button label="Change Owner"></lightning-button>
+                </li>
+                <li>
+                  <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                    <lightning-button-menu alternative-text="Show menu">
+                      <lightning-menu-item label="item1" value="item1"></lightning-menu-item>
+                      <lightning-menu-item label="item2" value="item2"></lightning-menu-item>
+                      <lightning-menu-item label="item3" value="item3"></lightning-menu-item>
+                    </lightning-button-menu>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slds-page-header__row slds-page-header__row_gutters">
+        <div class="slds-page-header__col-details">
+          <ul class="slds-page-header__detail-row">
+            <li class="slds-page-header__detail-block">
+              <div class="slds-text-title slds-truncate" title="Priority">Priority</div>
+              <div class="slds-truncate">{Priority__c}
+              </div>
+            </li>
+            <li class="slds-page-header__detail-block">
+              <div class="slds-text-title slds-truncate" title="Status">Status</div>
+              <div class="slds-truncate">{Status__c}
+              </div>
+            </li>
+            <li class="slds-page-header__detail-block">
+              <div class="slds-text-title slds-truncate" title="Case Number">Case Number</div>
+              <div class="slds-truncate">{Name}
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </template>
+  
+<!-- 페이지 레이아웃-->
+
+  <lightning-layout multiple-rows="true">
+<lightning-layout-item padding="around-small" size="12">
+  <lightning-layout>
+      <lightning-layout-item padding="around-small" size="8">
+          <div class="page-section page-right">
+              <h2>Left Sidebar</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                  ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                  ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+                  in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                  cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              </p>
+          </div>
+      </lightning-layout-item>
+
+      <lightning-layout-item padding="around-small" size="4">
+          <div class="page-section page-right">
+            
+              <lightning-card variant="narrow" icon-name="standard:Case" title="Detail">
+                <lightning-record-form record-id={recordId} object-api-name="aCase__c" layout-type="Full" columns="2" mode="view">
+                </lightning-record-form>
+              </lightning-card>
+           
+          </div>
+      </lightning-layout-item>
+  </lightning-layout>
+</lightning-layout-item>
+
+</lightning-layout>
+
+
+
+  <!-- 디테일 페이지 -->
+  <div class="slds-m-top_x-small">
+  <lightning-card variant="narrow" icon-name="standard:Case" title="Detail">
+    <lightning-record-form record-id={recordId} object-api-name="aCase__c" layout-type="Full" columns="2" mode="view">
+    </lightning-record-form>
+  </lightning-card>
+</div>
+  <!-- close case 버튼 클릭 시-->
+  <template if:true={modal}>
+    <c-case-button record-id={recordId} onclose={closeModal}></c-case-button>
+  </template>
+  
+  <!-- Edit 버튼 클릭 시-->
+  <template if:true={editModal}>
+    <c-case-edit record-id={recordId} onclose={closeEditModal}></c-case-edit>
+  </template>
+
+  <!-- Delete 버튼 클릭 시-->
+  <template if:true={deleteModal}>
+    <c-case-delete record-id={recordId} onclose={closeDeleteModal}></c-case-delete>
+  </template>
+</template>
