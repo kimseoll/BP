@@ -5,7 +5,7 @@ import { refreshApex } from "@salesforce/apex";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { deleteRecord } from 'lightning/uiRecordApi';
 import { getPicklistValues, getObjectInfo  } from "lightning/uiObjectInfoApi";
-import getCases from "@salesforce/apex/SearchRecordsController.getCases";
+import CaseSearch from "@salesforce/apex/AccountDataController.CaseSearch";
 import STATUS_FIELD from "@salesforce/schema/aCase__c.Status__c";
 import PRIORITY_FIELD from "@salesforce/schema/aCase__c.Priority__c";
 import ACASE__C_OBJECT from "@salesforce/schema/aCase__c";
@@ -48,27 +48,18 @@ const columns = [
         typeAttributes: {label: {fieldName: "ContactId__c"}, tooltip: "Name", target: "_blank", linkify: true} 
     },
     {
-        label: 'Status',
-        fieldName: 'Status',
-        type: 'picklistColumn', editable: true, sortable: true, typeAttributes: {
-            placeholder: 'Choose Type', options: { fieldName: 'pickListOptions' }, 
+        label: 'Status', fieldName: 'Status__c', type: 'picklistColumn', editable: true, typeAttributes: {
+            placeholder: 'Choose Status', options: { fieldName: 'pickListOptions' }, 
             value: { fieldName: 'Status__c' }, // default value for picklist,
             context: { fieldName: 'Id' } // binding account Id with context variable to be returned back
         }
     },
-    // {
-    //     label: 'Status',
-    //     fieldName: 'Status__c',
-    //     type: 'picklist',
-    //     sortable: true,
-    //     editable: true
-    // },
     {
-        label: 'Priority',
-        fieldName: 'Priority__c',
-        type: 'picklist',
-        sortable: true,
-        editable: true
+        label: 'Priority', fieldName: 'Priority__c', type: 'picklistColumn', editable: true, typeAttributes: {
+            placeholder: 'Choose Priority', options: { fieldName: 'pickList' }, 
+            value: { fieldName: 'Status__c' }, // default value for picklist,
+            context: { fieldName: 'Id' } // binding account Id with context variable to be returned back
+        }
     },
 
     {
@@ -90,15 +81,19 @@ export default class SearchRecordLWC extends NavigationMixin(LightningElement) {
     @track sortBy;
     @track sortDirection;
 
+    // 데이터 테이블 픽리스트
     @track pickListOptions;
-
+    @track pickList;
+    @track accountData;
+    lastSavedData = [];
     fldsItemValues = [];
-   
+    @track data = [];
+    showSpinner = false;
     error;
     columns = columns;
     searchString;
 
-
+    // 검색 픽리스트
     statusPickListValues;
     priorityPickListValues;
 
@@ -110,7 +105,46 @@ export default class SearchRecordLWC extends NavigationMixin(LightningElement) {
     status = null;
     priority = null;
 
-    @wire(getCases, {
+
+
+
+// 추가
+@wire(getObjectInfo, { objectApiName: ACASE__C_OBJECT })
+objectInfo;
+
+//fetch picklist options
+@wire(getPicklistValues, {
+    recordTypeId: "$objectInfo.data.defaultRecordTypeId",
+    fieldApiName: STATUS_FIELD
+})
+
+wirePickList({ error, data }) {
+    if (data) {
+        this.pickListOptions = data.values;
+    } else if (error) {
+        console.log(error);
+    }
+}
+@wire(getPicklistValues, {
+    recordTypeId: "$objectInfo.data.defaultRecordTypeId",
+    fieldApiName: PRIORITY_FIELD
+})
+
+PickList({ error, data }) {
+    if (data) {
+        this.pickList = data.values;
+    } else if (error) {
+        console.log(error);
+    }
+}
+
+
+
+
+
+
+
+    @wire(CaseSearch, {
         caseNumber: "$caseNumber",
         accountName: "$accountName",
         contactName: "$contactName",
@@ -125,11 +159,16 @@ export default class SearchRecordLWC extends NavigationMixin(LightningElement) {
         if (data) {
 
             let tempRecs = [];
-            data.forEach( (record) => {
-                let tempRec = Object.assign( {}, record );
+            data.forEach( ele => {
+                let tempRec = Object.assign( {}, ele );
+
+                tempRec.pickListOptions = this.pickListOptions;
+
+                tempRec.pickList = this.pickList;
+
                 tempRec.CaseNumber = '/lightning/r/aCase__c/' + tempRec.Id + '/view';
                 console.log(' tempRec' + JSON.stringify(tempRec)); ;
-                
+    
                 // tempRec에서 처리한 데이터를 이용해 연결된 아이디값 가져오기
                 if (tempRec.AccountId__c) {
                     tempRec.recordLink = "/" + tempRec.AccountId__c;  
@@ -141,6 +180,7 @@ export default class SearchRecordLWC extends NavigationMixin(LightningElement) {
                 }
 
                 tempRecs.push( tempRec );
+               
             });
             
             this.caseList = tempRecs;
@@ -159,43 +199,50 @@ export default class SearchRecordLWC extends NavigationMixin(LightningElement) {
 
 
 
-    // 데이터 테이블 수정
-    // saveHandleAction(event) {
-    //     this.fldsItemValues = event.detail.draftValues;
-    //     const inputsItems = this.fldsItemValues.slice().map(draft => {
-    //         const fields = Object.assign({}, draft);
-    //         return { fields };
-    //     });
+    //데이터 테이블 수정
+    saveHandleAction(event) {
+        this.showSpinner = true;
+        this.fldsItemValues = event.detail.draftValues;
+
+        const inputsItems = this.fldsItemValues.slice().map(draft => {
+            const fields = Object.assign({}, draft);
+            return { fields };
+        });
 
        
-    //     const promises = inputsItems.map(recordInput => updateRecord(recordInput));
-    //     Promise.all(promises).then(res => {
-    //         this.dispatchEvent(
-    //             new ShowToastEvent({
-    //                 title: 'Success',
-    //                 message: 'Records Updated Successfully!!',
-    //                 variant: 'success'
-    //             })
-    //         );
-    //         this.fldsItemValues = [];
-    //         return this.refresh();
-    //     }).catch(error => {
-    //         this.dispatchEvent(
-    //             new ShowToastEvent({
-    //                 title: 'Error',
-    //                 message: 'An Error Occured!!',
-    //                 variant: 'error'
-    //             })
-    //         );
-    //     }).finally(() => {
-    //         this.fldsItemValues = [];
-    //     });
-    // }
+        const promises = inputsItems.map(recordInput => updateRecord(recordInput));
+        Promise.all(promises).then(res => {
+            console.log(res);
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Success',
+                    message: 'Records Updated Successfully!!',
+                    variant: 'success'
+                })
+            );
+            this.fldsItemValues = [];
+            
+            //return this.refresh();
+        }).catch(error => {
+            console.log(error);
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message: 'An Error Occured!!',
+                    variant: 'error'
+                })
+            );
+        }).finally(() => {
+            this.fldsItemValues = [];
+            window.location.reload(); //새로고침
+            this.showSpinner = false;
+        });
+    }
 
    
-    // async refresh() {
-    //     await refreshApex(this.caseList);
-    // }
+    async refresh() {
+        await refreshApex(this.caseList);
+    }
 
 
 

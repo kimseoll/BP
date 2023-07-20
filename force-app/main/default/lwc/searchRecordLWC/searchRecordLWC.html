@@ -2,7 +2,7 @@
   @description       : 
   @author            : seol.kim@dkbmc.com
   @group             : 
-  @last modified on  : 07-18-2023
+  @last modified on  : 07-20-2023
   @last modified by  : seol.kim@dkbmc.com
 -->
 <template>
@@ -134,7 +134,7 @@
                         ></lightning-input>
                     </div>
                 </lightning-layout-item>
-                <lightning-layout-item size="1" padding="around-small">
+                <lightning-layout-item size="2" padding="around-small">
                     <div style="font-weight:bold">
                         <lightning-combobox
                             name="status"
@@ -145,7 +145,7 @@
                         ></lightning-combobox>
                     </div>
                 </lightning-layout-item>
-                <lightning-layout-item size="1" padding="around-small">
+                <lightning-layout-item size="2" padding="around-small">
                     <div style="font-weight:bold">
                         <lightning-combobox
                             name="priority"
@@ -168,25 +168,31 @@
             </lightning-layout>
         </div>
         <br><br>
-
-        <template if:true={caseList}>      
-            <lightning-datatable
-                key-field="Id"
-                data={caseList}
-                columns={columns}
-                onsave={saveHandleAction}
-                draft-values={fldsItemValues} 
-                show-row-number-column="true"
-                onrowaction={handleRowAction}
-                sorted-by={sortBy}
-                sorted-direction={sortDirection}
-                onsort={doSorting}>
-            </lightning-datatable>  
-        </template>      
-        <template if:true={error}>  
-            {error}>                  
-        </template>   
-
+        <!-- loader -->
+        <div if:true={showSpinner}>
+            <lightning-spinner
+                alternative-text="Loading..." variant="brand">
+            </lightning-spinner>
+        </div>
+        <div class="slds-var-p-around_small">
+            <template if:true={caseList}>      
+                <c-l-w-c-custom-datatable-type
+                    key-field="Id"
+                    data={caseList}
+                    columns={columns}
+                    onsave={saveHandleAction}
+                    draft-values={fldsItemValues} 
+                    show-row-number-column="true"
+                    onrowaction={handleRowAction}
+                    sorted-by={sortBy}
+                    sorted-direction={sortDirection}
+                    onsort={doSorting}>
+                </c-l-w-c-custom-datatable-type>
+            </template>      
+            <template if:true={error}>  
+                {error}>                  
+            </template>   
+        </div>
 
 
     <!-- new 버튼 클릭 시-->
