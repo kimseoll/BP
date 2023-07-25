@@ -1,0 +1,46 @@
+<!--
+  @description       : 
+  @author            : seol.kim@dkbmc.com
+  @group             : 
+  @last modified on  : 07-25-2023
+  @last modified by  : seol.kim@dkbmc.com
+-->
+<template>
+    <div class="slds-theme_default">
+        <div style="height: 500px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <lightning-record-edit-form object-api-name="CaseTeamMember__c" onsuccess={saveModal} >
+                        
+                        <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        label="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                                size="medium">
+                            </lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add Team Member</h2>
+                    </header>
+                   
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <lightning-output-field field-name="Name"></lightning-output-field>
+                            <lightning-input-field field-name="ParentId__c" value={recordId}></lightning-input-field>
+                            <lightning-input-field field-name="AccessLevel__c"></lightning-input-field>
+                            <lightning-input-field field-name="RowCause__c" value="Manual"></lightning-input-field>
+                            <lightning-input-field field-name="UserOrGroupId__c"> </lightning-input-field>
+                        </div>
+                        <div class="slds-modal__footer">
+                            <lightning-button variant="neutral" label="Close" onclick={closeModal}></lightning-button>
+                            <lightning-button variant="brand" class="slds-m-left_x-small" label="Save"
+                            type="submit"></lightning-button>
+                        </div>
+                        
+                    </lightning-record-edit-form>
+                    </div>
+                </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </div>
+    </div>
+</template>

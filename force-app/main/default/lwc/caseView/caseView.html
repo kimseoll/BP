@@ -2,7 +2,7 @@
   @description       : 
   @author            : seol.kim@dkbmc.com
   @group             : 
-  @last modified on  : 07-12-2023
+  @last modified on  : 07-25-2023
   @last modified by  : seol.kim@dkbmc.com
 -->
 <template>
@@ -85,53 +85,103 @@
       </div>
     </div>
   </template>
-  
-<!-- 페이지 레이아웃-->
+  <!--바디-->
+  <div class="slds-p-top_x-small">
+  <div class="slds-grid slds-gutters_direct">
+    
+    <div class="slds-col slds-size_2-of-3">
+      <lightning-card>
+        <div class="slds-p-horizontal_medium">
+          <div class="slds-tabs_default slds-tabs_medium">
+            <ul class="slds-tabs_default__nav" role="tablist">
+              <li class="slds-tabs_default__item slds-is-active" title="Item One" role="presentation">
+                <a class="slds-tabs_default__link" href="#" role="tab" tabindex="0" aria-selected="true"
+                  aria-controls="tab-default-1" id="tab-default-1__item">Related</a>
+              </li>
+            </ul>
+            <br>
+            <div id="tab-default-1" class="slds-tabs_default__content slds-show" role="tabpanel"
+              aria-labelledby="tab-default-1__item">
+              <article class="slds-card">
+                <div class="slds-card__header slds-grid">
+                  <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                      <lightning-icon icon-name="standard:case" alternative-text="case" title="case"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                      <h2 class="slds-card__header-title">
+                        <a href="#" class="slds-card__header-link slds-truncate" title="Card Header">
+                          <span>Case Team</span>
+                        </a>
+                      </h2>
+                    </div>
+                    <div class="slds-no-flex">
+                      <lightning-button label="Add Member" onclick={openAddMember}></lightning-button>
+                    </div>
+                  </header>
+                </div>
+                <div class="slds-card__body"></div>
+                <footer class="slds-card__footer"></footer>
+              </article>
+                              <!-- 페이지 레이아웃-->
+                              <template if:true={caseList}>
+                                <div style="height: 300px;">
+                                  <lightning-datatable key-field="id" data={caseList} onrowaction={handleRowAction} columns={columns}>
+                                  </lightning-datatable>
+                                </div>
+                              </template>
 
-  <lightning-layout multiple-rows="true">
-<lightning-layout-item padding="around-small" size="12">
-  <lightning-layout>
-      <lightning-layout-item padding="around-small" size="8">
-          <div class="page-section page-right">
-              <h2>Left Sidebar</h2>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                  ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                  ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
-                  in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
+
+            </div>
           </div>
-      </lightning-layout-item>
+        </div>
+      </lightning-card>
+    </div>
 
-      <lightning-layout-item padding="around-small" size="4">
-          <div class="page-section page-right">
-            
-              <lightning-card variant="narrow" icon-name="standard:Case" title="Detail">
-                <lightning-record-form record-id={recordId} object-api-name="aCase__c" layout-type="Full" columns="2" mode="view">
-                </lightning-record-form>
-              </lightning-card>
-           
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="slds-col slds-size_1-of-3">
+      <lightning-card>
+        <div class="slds-p-horizontal_medium">
+          <div class="slds-tabs_default slds-tabs_medium">
+            <ul class="slds-tabs_default__nav" role="tablist">
+              <li class="slds-tabs_default__item slds-is-active" title="Item One" role="presentation">
+                <a class="slds-tabs_default__link" href="#" role="tab" tabindex="0" aria-selected="true"
+                  aria-controls="tab-default-1" id="tab-default-2__item">Detail</a>
+              </li>
+            </ul>
+            <br>
+            <div id="tab-default-2" class="slds-tabs_default__content slds-show" role="tabpanel"
+              aria-labelledby="tab-default-2__item">
+              <lightning-record-form record-id={recordId} object-api-name="aCase__c" layout-type="Full" columns="2"
+                mode="view">
+              </lightning-record-form>
+            </div>
           </div>
-      </lightning-layout-item>
-  </lightning-layout>
-</lightning-layout-item>
-
-</lightning-layout>
-
-
-
-  <!-- 디테일 페이지 -->
-  <div class="slds-m-top_x-small">
-  <lightning-card variant="narrow" icon-name="standard:Case" title="Detail">
-    <lightning-record-form record-id={recordId} object-api-name="aCase__c" layout-type="Full" columns="2" mode="view">
-    </lightning-record-form>
-  </lightning-card>
+        </div>
+      </lightning-card>
+    </div>
+  </div>
 </div>
   <!-- close case 버튼 클릭 시-->
   <template if:true={modal}>
     <c-case-button record-id={recordId} onclose={closeModal}></c-case-button>
   </template>
-  
+
   <!-- Edit 버튼 클릭 시-->
   <template if:true={editModal}>
     <c-case-edit record-id={recordId} onclose={closeEditModal}></c-case-edit>
@@ -141,4 +191,12 @@
   <template if:true={deleteModal}>
     <c-case-delete record-id={recordId} onclose={closeDeleteModal}></c-case-delete>
   </template>
+
+  <!-- Add Member 버튼 클릭 시-->
+  <template if:true={AddMemberModal}>
+    <c-add-member record-id={recordId} onclose={closeAddMember}></c-add-member>
+  </template>
+
+
+
 </template>

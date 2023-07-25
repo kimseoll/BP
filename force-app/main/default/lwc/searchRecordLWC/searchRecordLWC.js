@@ -48,14 +48,14 @@ const columns = [
         typeAttributes: {label: {fieldName: "ContactId__c"}, tooltip: "Name", target: "_blank", linkify: true} 
     },
     {
-        label: 'Status', fieldName: 'Status__c', type: 'picklistColumn', editable: true, typeAttributes: {
+        label: 'Status', fieldName: 'Status__c', type: 'picklistColumn', sortable: true, editable: true, typeAttributes: {
             placeholder: 'Choose Status', options: { fieldName: 'pickListOptions' }, 
             value: { fieldName: 'Status__c' }, // default value for picklist,
             context: { fieldName: 'Id' } // binding account Id with context variable to be returned back
         }
     },
     {
-        label: 'Priority', fieldName: 'Priority__c', type: 'picklistColumn', editable: true, typeAttributes: {
+        label: 'Priority', fieldName: 'Priority__c', type: 'picklistColumn', sortable: true, editable: true, typeAttributes: {
             placeholder: 'Choose Priority', options: { fieldName: 'pickList' }, 
             value: { fieldName: 'Status__c' }, // default value for picklist,
             context: { fieldName: 'Id' } // binding account Id with context variable to be returned back
@@ -92,6 +92,7 @@ export default class SearchRecordLWC extends NavigationMixin(LightningElement) {
     error;
     columns = columns;
     searchString;
+    tempRec;
 
     // 검색 픽리스트
     statusPickListValues;
@@ -137,8 +138,6 @@ PickList({ error, data }) {
         console.log(error);
     }
 }
-
-
 
 
 
@@ -221,8 +220,9 @@ PickList({ error, data }) {
                 })
             );
             this.fldsItemValues = [];
+            return this.refresh();
             
-            //return this.refresh();
+           
         }).catch(error => {
             console.log(error);
             this.dispatchEvent(
@@ -234,13 +234,16 @@ PickList({ error, data }) {
             );
         }).finally(() => {
             this.fldsItemValues = [];
-            window.location.reload(); //새로고침
+            //window.location.reload(); //새로고침
+            
             this.showSpinner = false;
         });
+   
     }
 
    
     async refresh() {
+        console.log('async refresh');
         await refreshApex(this.caseList);
     }
 
