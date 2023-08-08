@@ -1,0 +1,86 @@
+<!--
+  @description       : 
+  @author            : seol.kim@dkbmc.com
+  @group             : 
+  @last modified on  : 08-08-2023
+  @last modified by  : seol.kim@dkbmc.com
+-->
+<template>
+    <lightning-card title="aCase Search" icon-name="standard:calibration">
+        <lightning-button
+            slot="actions"
+            label="Reset"
+            onclick={handleReset}
+            
+        ></lightning-button>
+
+        <div class="slds-p-horizontal_xx-small">
+            <lightning-layout multiple-rows> 
+                <lightning-layout-item size="2" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-input
+                            label="Case Number"
+                            type="text"
+                            value={caseNumber}
+                            onchange={handleCaseNumberChange}
+                    ></lightning-input>
+              
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="2" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-input
+                            label="Subject"   
+                            type="text"
+                            value={subject}
+                            onchange={handleSubjectChange}
+                        ></lightning-input>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="2" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-input
+                        label="Account Name"   
+                        type="text"
+                        value={accountName}
+                        onchange={handleAccountChange}
+                    ></lightning-input>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="2" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-input
+                            label="Contact Name"   
+                            type="text"
+                            value={contactName}
+                            onchange={handleContactChange}
+                        ></lightning-input>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="2" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-combobox
+                            name="status"
+                            label="Status"
+                            value={status}                          
+                            options={statusPickListValues}
+                            onchange={handleStatusChange}
+                            
+                        ></lightning-combobox>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="2" padding="around-small">
+                    <div style="font-weight:bold">
+                        <lightning-combobox
+                            name="priority"
+                            label="Priority"
+                            value={priority} 
+                            options={priorityPickListValues}
+                            onchange={handlePriorityChange}
+                        ></lightning-combobox>
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </lightning-card>
+</template>

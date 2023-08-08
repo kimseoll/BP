@@ -1,8 +1,8 @@
-/**
+ /**
  * @description       : 
  * @author            : seol.kim@dkbmc.com
  * @group             : 
- * @last modified on  : 08-01-2023
+ * @last modified on  : 08-08-2023
  * @last modified by  : seol.kim@dkbmc.com
 **/
 trigger CaseChangeOwnerTrigger on aCase__c (before insert, before update) {
@@ -33,7 +33,7 @@ trigger CaseChangeOwnerTrigger on aCase__c (before insert, before update) {
         System.debug('userMap=>' + userMap);
     
         for(aCase__c con : toProcess){
-            if(con.CaseOrigin__c == 'Web' || con.CaseOrigin__c == 'Email'){
+            if(userMap.get(con.CaseOrigin__c) != null){
                 con.OwnerId = userMap.get(con.CaseOrigin__c); //Map.get(key);
                 System.debug('userMap.get(con.CaseOrigin__c)=>' + userMap.get(con.CaseOrigin__c));
             }
@@ -53,17 +53,15 @@ trigger CaseChangeOwnerTrigger on aCase__c (before insert, before update) {
         System.debug('userMap=>' + userMap);
     
         for(aCase__c con : toProcess){
-            if(con.CaseOrigin__c == 'Web' || con.CaseOrigin__c == 'Email'){
+            if(userMap.get(con.CaseOrigin__c) != null){
                 con.OwnerId = userMap.get(con.CaseOrigin__c); //Map.get(key);
                 System.debug('userMap.get(con.CaseOrigin__c)=>' + userMap.get(con.CaseOrigin__c));
 
-            } else if (con.CaseOrigin__c == 'Phone') {
+            } else if (userMap.get(con.CaseOrigin__c) == null) {
                 con.OwnerId = con.CreatedById; 
             }
             
         }
-
-
 
     }
 }

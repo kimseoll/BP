@@ -2,7 +2,7 @@
   @description       : 
   @author            : seol.kim@dkbmc.com
   @group             : 
-  @last modified on  : 07-24-2023
+  @last modified on  : 08-08-2023
   @last modified by  : seol.kim@dkbmc.com
 -->
 <template>
@@ -83,6 +83,11 @@
         </div>
     </div>
     <lightning-card title="Search case component">  
+        <lightning-button
+            slot="actions"
+            label="Clear Search"
+            onclick={clearSearch}
+        ></lightning-button>
         <div class="slds-p-horizontal_small">
             <lightning-layout multiple-rows> 
                 <lightning-layout-item size="2" padding="around-small">
@@ -156,15 +161,6 @@
                         ></lightning-combobox>
                     </div>
                 </lightning-layout-item>
-                <lightning-layout-item size="1" padding="around-small" class="slds-m-top_large">
-                    <lightning-button-icon
-                    variant="base"
-                    size="small"
-                    icon-name="utility:clear"
-                    alternative-text="Clear Search"
-                    onclick={clearSearch}
-                ></lightning-button-icon>
-                </lightning-layout-item>
             </lightning-layout>
         </div>
         <br><br>
@@ -175,20 +171,24 @@
             </lightning-spinner>
         </div>
         <div class="slds-var-p-around_small">
-            <template if:true={caseList}>      
-                <c-l-w-c-custom-datatable-type
-                    key-field="Id"
-                    data={caseList}
-                    columns={columns}
-                    onsave={saveHandleAction}
-                    draft-values={fldsItemValues} 
-                    show-row-number-column="true"
-                    onrowaction={handleRowAction}
-                    sorted-by={sortBy}
-                    sorted-direction={sortDirection}
-                    onsort={doSorting}>
-                </c-l-w-c-custom-datatable-type>
-            </template>      
+            <template if:true={caseList}>
+                <c-custom-datatable                     
+                key-field="Id"
+                data={caseList} 
+                columns={columns} 
+                onlookupchanged={lookupChanged} 
+                onvalueselect={handleSelection}
+                draft-values={draftValues} 
+                oncellchange={handleCellChange}
+                onsave={handleSave}
+                oncancel={handleCancel}
+                onrowaction={handleRowAction}
+                sorted-by={sortBy}
+                sorted-direction={sortDirection}
+                onsort={doSorting}>
+                >
+                </c-custom-datatable>
+            </template>     
             <template if:true={error}>  
                 {error}>                  
             </template>   

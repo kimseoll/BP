@@ -1,6 +1,5 @@
 import { LightningElement, wire, api, track } from "lwc";
 import { updateRecord } from "lightning/uiRecordApi";
-import { NavigationMixin } from "lightning/navigation";
 import { refreshApex } from "@salesforce/apex";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { deleteRecord } from 'lightning/uiRecordApi';
@@ -9,6 +8,17 @@ import caseSearch from "@salesforce/apex/caseController.caseSearch";
 import STATUS_FIELD from "@salesforce/schema/aCase__c.Status__c";
 import PRIORITY_FIELD from "@salesforce/schema/aCase__c.Priority__c";
 import ACASE__C_OBJECT from "@salesforce/schema/aCase__c";
+
+
+import {
+    publish,
+    subscribe,
+    unsubscribe,
+    MessageContext
+} from 'lightning/messageService';
+
+import FILTERSCHANGEMC from '@salesforce/messageChannel/FiltersChange__c';
+import CASE_SELECTED_MESSAGE from '@salesforce/messageChannel/CaseSelected__c';
 
 
 const actions = [
@@ -86,9 +96,10 @@ const columns = [
         type: 'action',
         typeAttributes: { rowActions: actions },
     },
-];
+]
 
-export default class SearchRecordLWC extends NavigationMixin(LightningElement) {
+export default class LWCDatatable extends LightningElement {
+   
     @api recordId;
     @api objectApiName;
     @track caseList; // data
@@ -135,49 +146,51 @@ export default class SearchRecordLWC extends NavigationMixin(LightningElement) {
     ata = [];
 
 
+    @wire(MessageContext)
+    messageContext;
 
-
-// 추가
-@wire(getObjectInfo, { objectApiName: ACASE__C_OBJECT })
-objectInfo;
-
-//fetch picklist options
-@wire(getPicklistValues, {
-    recordTypeId: "$objectInfo.data.defaultRecordTypeId",
-    fieldApiName: STATUS_FIELD
-})
-
-wirePickList({ error, data }) {
-    if (data) {
-        this.pickListOptions = data.values;
-    } else if (error) {
-        console.log(error);
+    @wire(getObjectInfo, { objectApiName: ACASE__C_OBJECT })
+    objectInfo;
+    
+    //fetch picklist options
+    @wire(getPicklistValues, {
+        recordTypeId: "$objectInfo.data.defaultRecordTypeId",
+        fieldApiName: STATUS_FIELD
+    })
+    
+    wirePickList({ error, data }) {
+        if (data) {
+            this.pickListOptions = data.values;
+        } else if (error) {
+            console.log(error);
+        }
     }
-}
-@wire(getPicklistValues, {
-    recordTypeId: "$objectInfo.data.defaultRecordTypeId",
-    fieldApiName: PRIORITY_FIELD
-})
-
-PickList({ error, data }) {
-    if (data) {
-        this.pickList = data.values;
-    } else if (error) {
-        console.log(error);
+    @wire(getPicklistValues, {
+        recordTypeId: "$objectInfo.data.defaultRecordTypeId",
+        fieldApiName: PRIORITY_FIELD
+    })
+    
+    PickList({ error, data }) {
+        if (data) {
+            this.pickList = data.values;
+        } else if (error) {
+            console.log(error);
+        }
     }
-}
 
 
 
 
 
-    @wire(caseSearch, {
+    @wire(caseSearch,{
         caseNumber: "$caseNumber",
+        subject: "$subject",
         accountName: "$accountName",
         contactName: "$contactName",
-        subject: "$subject",
         status: "$status",
-        priority: "$priority"
+        priority: "$priority",
+       
+        
     })
     wiredaCase({
         error,
@@ -191,21 +204,11 @@ PickList({ error, data }) {
 
                 tempRec.pickListOptions = this.pickListOptions;
                 tempRec.pickList = this.pickList;
-
                 tempRec.CaseNumber = '/lightning/r/aCase__c/' + tempRec.Id + '/view';
                 console.log(' tempRec' + JSON.stringify(tempRec)); ;
     
-                // tempRec에서 처리한 데이터를 이용해 연결된 아이디값 가져오기
-            //     if (tempRec.AccountId__c) {
-            //         tempRec.recordLink = "/" + tempRec.AccountId__c;  
-            //         tempRec.AccountId__c = tempRec.AccountId__r.Name;
-            //     }
-            //    if (tempRec.ContactId__c) {
-            //             tempRec.contactLink = "/" + tempRec.ContactId__c;  
-            //             tempRec.ContactId__c = tempRec.ContactId__r.Name;
-            //     }
-
                 tempRecs.push( tempRec );
+                console.log(' tempRec' + JSON.stringify(tempRec)); ;
                
             });
             
@@ -218,8 +221,30 @@ PickList({ error, data }) {
         }
     }
 
+    connectedCallback() { 
+        this.subscription = subscribe(
+            this.messageContext,
+            FILTERSCHANGEMC,
+            (message) => {
+                this.handleFilterChange(message);
+            }
+        );
+    }
 
-    
+    disconnectedCallback() {
+        unsubscribe(this.subscription);
+        this.subscription = null;
+    }
+
+    handleFilterChange(filters) {
+        this.caseNumber = filters.caseNumber;
+        this.subject = filters.subject;
+        this.accountName = filters.accountName;
+        this.contactName = filters.contactName;
+        this.status = filters.status;
+        this.priority = filters.priority;
+
+    }
 
     updateDataValues(updateItem) {
         let copyData = JSON.parse(JSON.stringify(this.data));
@@ -358,123 +383,21 @@ PickList({ error, data }) {
 
 
 
-    // STATUS_FIELD 검색 시 픽리스트 값 가져오기
-    @wire(getObjectInfo, { objectApiName: ACASE__C_OBJECT })
-    objectInfo;
 
 
-    @wire(getPicklistValues, {
-        recordTypeId: '$objectInfo.data.defaultRecordTypeId', // 마스터 레코드 유형 Id => recordTypeId: "012000000000000AAA"
-        fieldApiName: STATUS_FIELD
-    })
-    statusPickLists({ error, data }) {
-        if (error) {
-            console.error("error", error);
-        } else if (data) {
-            this.statusPickListValues = [
-                { label: "All", value: null },
-                ...data.values
-            ];
-        }
-    }
-    // PRIORITY_FIELD 검색 시 픽리스트 값 가져오기
-    @wire(getPicklistValues, {
-        recordTypeId: '$objectInfo.data.defaultRecordTypeId',
-        fieldApiName: PRIORITY_FIELD
-    })
-    priorityPickListPickLists({ error, data }) {
-        if (error) {
-            console.error("error", error);
-        } else if (data) {
-            this.priorityPickListValues = [
-                { label: "All", value: null },
-                ...data.values
-            ];
-        }
-    }
 
-    handleChange(event) {
-        this[event.target.name] = event.target.value;
-        console.log("change =>", this[event.target.name]);
-    }
 
-    handleKeyUp(event) {
-        clearTimeout(this.typingTimer);
-        let value = event.target.value;
-        let name = event.target.name;
 
-        this.typingTimer = setTimeout(() => {
-            this[name] = value;
-        }, this.doneTypingInterval);
-    }
 
-    // 검색 새로고침
-    clearSearch() {
-        this.caseNumber = "";
-        this.accountName = "";
-        this.contactName = "";
-        this.subject = "";
-        this.status = null;
-        this.priority = null;
-        this.searchable = this.data;
-        this.searchAllValue = "";
-        this.searchAll();
-    }
 
-    // 검색
-    handleSearchAll(event) {
-        this.searchAllValue = event.target.value;
-        this.searchAll();
-    }
 
-    searchAll() {
-        let searchStr = this.searchAllValue.toLowerCase();
-        const regex = new RegExp(
-            "(^" + searchStr + ")|(." + searchStr + ")|(" + searchStr + "$)"
-        );
-        console.log('regex =>'+regex);
-        if (searchStr.length > 2) {
-            this.searchable = this.data.filter((item) => {
-                if (
-                    regex.test(
-                        item.caseData.Name.toLowerCase() +
-                            " " +
-                            item.caseData.Name.toLowerCase()
-                    ) ||
-                    regex.test(
-                        item.caseData.Status__c?.toLowerCase() +
-                            " " +
-                            item.caseData.Status__c?.toLowerCase()
-                    ) ||
-                    regex.test(
-                        item.caseData.Subject__c?.toLowerCase() +
-                            " " +
-                            item.caseData.Subject__c?.toLowerCase()
-                    ) ||
-                    regex.test(
-                        item.caseData.AccountId__r?.Name?.toLowerCase() +
-                            " " +
-                            item.caseData.AccountId__r?.Name?.toLowerCase()
-                    ) ||
-                    regex.test(
-                        item.caseData.ContactId__r?.Name?.toLowerCase() +
-                            " " +
-                            item.caseData.ContactId__r?.Name?.toLowerCase()
-                    ) ||
-                    regex.test(
-                        item.caseData.Priority__c?.toLowerCase() +
-                            " " +
-                            item.caseData.Priority__c?.toLowerCase()
-                    )
-                ) {
-                    return item;
-                }
-            });
-        } else if (this.caseNumber.length <= 2) {
-            this.searchable = this.data;
-        }
-        console.log(this.searchable);
-    }
+
+
+
+
+
+
+
 
     //액션 이벤트
     handleRowAction(event) {
@@ -487,8 +410,23 @@ PickList({ error, data }) {
             case 'edit':
                 this.editRow(row);
                 break;
+            case 'card':
+                this.cardRow(row);
+                break;
             default:
         }
+    }
+
+    // 액션 이벤트 - 메시지 카드
+    cardRow(row) {
+        console.log('row=>' + JSON.stringify(row));
+        console.log('row.detail =>' + row.detail);
+        // Published ProductSelected message
+        publish(this.messageContext, CASE_SELECTED_MESSAGE, {
+            caseId: row.Id
+            
+        });
+        console.log('row =>' + JSON.stringify(row));
     }
 
     // 액션 이벤트 - 수정
@@ -526,29 +464,4 @@ PickList({ error, data }) {
             );
         });
     }
-
-    // 수정버튼 모달 창 열기
-    openEditModal(){
-        this.editModal = true;
-        console.log('editModal =>' + this.editModal);
-    }
-
-    // 수정버튼 모달 창 닫기
-    closeEditModal(){
-        this.editModal = false;
-    }
-
-
-
-    // new 모달 창 열기
-    openModal() {
-        this.modal = true;
-        console.log('modal =>' + modal);
-    }
-
-    // close case 모달 창 닫기
-    closeModal() {
-        this.modal = false;
-    }
-
 }

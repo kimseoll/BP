@@ -1,0 +1,57 @@
+<!--
+  @description       : 
+  @author            : seol.kim@dkbmc.com
+  @group             : 
+  @last modified on  : 08-08-2023
+  @last modified by  : seol.kim@dkbmc.com
+-->
+<template>
+    <lightning-card icon-name="standard:apex_plugin">
+        <template lwc:if={recordId}>
+            <span slot="title">{caseNumber}</span>
+            <lightning-button-icon
+                icon-name="utility:expand_alt"
+                slot="actions"
+                onclick={handleNavigateToRecord}
+                ><label>Open Record</label></lightning-button-icon
+            >
+            <div class="slds-var-m-horizontal_medium">
+
+                <lightning-record-view-form
+                    record-id={recordId}
+                    onload={handleRecordLoaded}
+                    object-api-name="aCase__c"
+                    density="compact"
+                >
+                    <lightning-output-field
+                        field-name={subjectField}
+                    ></lightning-output-field>
+                    <lightning-output-field
+                        field-name={accountNameField}
+                    ></lightning-output-field>
+                    <lightning-output-field
+                        field-name={contactNameField}
+                    ></lightning-output-field>
+                    <lightning-output-field
+                        field-name={statusField}
+                    ></lightning-output-field>
+                    <lightning-output-field
+                        field-name={priorityField}
+                    ></lightning-output-field>
+                    <lightning-output-field
+                        field-name={caseOrigin}
+                    ></lightning-output-field>
+                    <lightning-output-field
+                        field-name={ownerName}
+                    ></lightning-output-field>
+                </lightning-record-view-form>
+            </div>
+        </template>
+
+        <template lwc:else>
+            <c-placeholder
+                message="Select a product to see details"
+            ></c-placeholder>
+        </template>
+    </lightning-card>
+</template>

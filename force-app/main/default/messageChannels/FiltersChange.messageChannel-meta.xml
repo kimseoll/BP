@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <isExposed>true</isExposed>
+    <lightningMessageFields>
+        <description>Case Number</description>
+        <fieldName>caseNumber</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <description>Subject</description>
+        <fieldName>subject</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <description>Account Name</description>
+        <fieldName>accountName</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <description>Contact Name</description>
+        <fieldName>contactName</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <description>Status</description>
+        <fieldName>status</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <description>Priority</description>
+        <fieldName>priority</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <description>Case Origin</description>
+        <fieldName>caseOrigin</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <description>Owner Name</description>
+        <fieldName>ownerName</fieldName>
+    </lightningMessageFields>
+    <masterLabel>Filters Change Message Channel</masterLabel>
+</LightningMessageChannel>

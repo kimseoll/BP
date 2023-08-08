@@ -1,0 +1,42 @@
+<!--
+  @description       : 
+  @author            : seol.kim@dkbmc.com
+  @group             : 
+  @last modified on  : 08-08-2023
+  @last modified by  : seol.kim@dkbmc.com
+-->
+<template>
+    <!-- create card -->
+    <lightning-card variant="Narrow" title="LWC aCase Datatable "
+        icon-name="standard:folder" class="cardSpinner">
+        <!-- loader -->
+        <div if:true={showSpinner}>
+            <lightning-spinner alternative-text="Loading..." variant="brand">
+            </lightning-spinner>
+        </div>
+        <!-----/loader-------->
+        <div class="slds-var-p-around_small">
+            <template if:true={caseList}>
+                <c-custom-datatable                     
+                key-field="Id"
+                data={caseList} 
+                columns={columns} 
+                onlookupchanged={lookupChanged} 
+                onvalueselect={handleSelection}
+                draft-values={draftValues} 
+                oncellchange={handleCellChange}
+                onsave={handleSave}
+                oncancel={handleCancel}
+                onrowaction={handleRowAction}
+                sorted-by={sortBy}
+                sorted-direction={sortDirection}
+                onsort={doSorting}>
+                >
+                </c-custom-datatable>
+            </template>
+            <template if:true={error}>  
+                {error}>                  
+            </template>  
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>This event is fired when a case is selected.</description>
+    <isExposed>true</isExposed>
+    <lightningMessageFields>
+        <description>Selected case Id.</description>
+        <fieldName>caseId</fieldName>
+    </lightningMessageFields>
+    <masterLabel>CaseSelected</masterLabel>
+</LightningMessageChannel>
